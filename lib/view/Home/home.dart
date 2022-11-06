@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/controller/home_controller.dart';
+import 'package:to_do_app/model/to_do_model.dart';
+import 'package:to_do_app/repository/home_repository.dart';
+
+import '../add/add_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -8,11 +13,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isChecked = false;
-  var cont = 0;
-  void onPressed() {
-    cont++;
-  }
+  bool isDone = false;
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final homeController = HomeController(HomeRepositoryHttp());
+  final controller = HomeController(HomeRepositoryHttp());
 
   @override
   Widget build(BuildContext context) {
@@ -31,40 +36,50 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('To Do List'),
-      ),
-      body: Column(
-        children: [
-          ListTile(
-            leading: Checkbox(
-                checkColor: Colors.white,
-                fillColor: MaterialStateProperty.resolveWith(getColor),
-                value: isChecked,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isChecked = value!;
-                  });
-                }),
-            title: const Text('Atividade'),
-            subtitle: const Text('Descrição'),
-            trailing: const Icon(Icons.delete),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-                child: Column(
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Título'),
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Descrição'),
-                ),
-                ElevatedButton(
-                    onPressed: onPressed, child: const Text('Adicionar'))
-              ],
-            )),
-          )
+        actions: [
+          IconButton(
+              onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddPage())).then((_) {
+                    setState(() {});
+                  }),
+              icon: const Icon(Icons.add))
         ],
+      ),
+      body: FutureBuilder<List<ToDoModel>>(
+        future: controller.getToDos(),
+        builder: ((context, snapshot) {
+          if (snapshot.data == null && !snapshot.hasError) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            const Center(
+              child: Text('Ops, deu ruim!'),
+            );
+          }
+          return ListView.builder(
+              itemCount: snapshot.data?.length,
+              itemBuilder: (context, index) {
+                final todo = snapshot.data?[index];
+                return ListTile(
+                  leading: Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: isDone,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isDone = value!;
+                        });
+                      }),
+                  title: Text(todo?.title ?? ''),
+                  subtitle: Text(todo?.description ?? ''),
+                  trailing: const Icon(Icons.delete),
+                );
+              });
+        }),
       ),
     );
   }

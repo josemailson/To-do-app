@@ -1,46 +1,43 @@
 import 'dart:convert';
 
 class ToDoModel {
-  final int id;
   final String title;
   final String description;
-  final bool isChecked;
+  final bool isDone;
+  final String? id;
   ToDoModel({
-    required this.id,
     required this.title,
     required this.description,
-    required this.isChecked,
+    required this.isDone,
+    this.id,
   });
 
   ToDoModel copyWith({
-    int? id,
     String? title,
     String? description,
-    bool? isChecked,
+    bool? isDone,
   }) {
     return ToDoModel(
-      id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
-      isChecked: isChecked ?? this.isChecked,
+      isDone: isDone ?? this.isDone,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'title': title,
       'description': description,
-      'isChecked': isChecked,
+      'isDone': isDone,
     };
   }
 
   factory ToDoModel.fromMap(Map<String, dynamic> map) {
     return ToDoModel(
-      id: map['id'].toInt() as int,
       title: map['title'] as String,
       description: map['description'] as String,
-      isChecked: map['isChecked'] as bool,
+      isDone: map['isDone'] as bool,
+      id: map['_id'],
     );
   }
 
@@ -50,25 +47,18 @@ class ToDoModel {
       ToDoModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'ToDoModel(id: $id, title: $title, description: $description, isChecked: $isChecked)';
-  }
+  String toString() =>
+      'ToDoModel(title: $title, description: $description, isDone: $isDone)';
 
   @override
   bool operator ==(covariant ToDoModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
-        other.title == title &&
+    return other.title == title &&
         other.description == description &&
-        other.isChecked == isChecked;
+        other.isDone == isDone;
   }
 
   @override
-  int get hashCode {
-    return id.hashCode ^
-        title.hashCode ^
-        description.hashCode ^
-        isChecked.hashCode;
-  }
+  int get hashCode => title.hashCode ^ description.hashCode ^ isDone.hashCode;
 }
