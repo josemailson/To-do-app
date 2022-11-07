@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../controller/home_controller.dart';
 import '../../model/to_do_model.dart';
 import '../../repository/home_repository.dart';
+import '../Home/home.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -40,6 +41,7 @@ class _AddPageState extends State<AddPage> {
                         title: titleController.text,
                         description: descriptionController.text,
                         isDone: false));
+                    Navigator.pop(context, true);
                   },
                   child: const Text('Adicionar'))
             ],

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/home_controller.dart';
 import 'package:to_do_app/model/to_do_model.dart';
@@ -13,11 +15,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isDone = false;
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final homeController = HomeController(HomeRepositoryHttp());
   final controller = HomeController(HomeRepositoryHttp());
+  int id = 0;
+  bool isDone = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +36,27 @@ class _HomeState extends State<Home> {
       return Colors.red;
     }
 
+    void refreshData() {
+      id++;
+    }
+
+    FutureOr onGoBack(dynamic value) {
+      refreshData();
+      setState(() {});
+    }
+
+    void navigateSecondPage() {
+      Route route = MaterialPageRoute(builder: (context) => const AddPage());
+      Navigator.push(context, route).then(onGoBack);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('To Do List'),
         actions: [
           IconButton(
-              onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddPage())).then((_) {
-                    setState(() {});
-                  }),
+              // ignore: unnecessary_new
+              onPressed: () async => navigateSecondPage(),
               icon: const Icon(Icons.add))
         ],
       ),
@@ -68,15 +81,31 @@ class _HomeState extends State<Home> {
                   leading: Checkbox(
                       checkColor: Colors.white,
                       fillColor: MaterialStateProperty.resolveWith(getColor),
-                      value: isDone,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isDone = value!;
-                        });
+                      value: todo?.isDone,
+                      onChanged: (bool? value) async {
+                        final result = await controller.checkToDo(
+                            todo!.id!,
+                            ToDoModel(
+                                title: todo.title,
+                                description: todo.description,
+                                isDone: value!));
+                        if (result) {
+                          setState(() {
+                            isDone = value;
+                          });
+                        }
                       }),
                   title: Text(todo?.title ?? ''),
                   subtitle: Text(todo?.description ?? ''),
-                  trailing: const Icon(Icons.delete),
+                  trailing: IconButton(
+                    onPressed: () async {
+                      final result = await controller.deleteToDo(todo!.id!);
+                      if (result) {
+                        setState(() {});
+                      }
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
                 );
               });
         }),

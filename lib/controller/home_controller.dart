@@ -15,4 +15,12 @@ class HomeController {
     final result = await homeRepository.getToDos();
     return result;
   }
+
+  Future<bool> deleteToDo(String id) async {
+    return await homeRepository.deleteToDo(id);
+  }
+
+  Future<bool> checkToDo(String id, ToDoModel toDo) async {
+    return await homeRepository.checkToDo(id, toDo);
+  }
 }
