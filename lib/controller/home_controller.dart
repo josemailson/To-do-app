@@ -6,9 +6,9 @@ class HomeController {
 
   HomeController(this.homeRepository);
 
-  Future<void> createToDo(ToDoModel toDoModel) async {
+  Future<bool> createToDo(ToDoModel toDoModel) async {
     final result = await homeRepository.createToDo(toDoModel);
-    print(result);
+    return result;
   }
 
   Future<List<ToDoModel>> getToDos() async {
@@ -20,7 +20,7 @@ class HomeController {
     return await homeRepository.deleteToDo(id);
   }
 
-  Future<bool> checkToDo(String id, ToDoModel toDo) async {
-    return await homeRepository.checkToDo(id, toDo);
+  Future<bool> editToDo(String id, ToDoModel toDo) async {
+    return await homeRepository.editToDo(id, toDo);
   }
 }

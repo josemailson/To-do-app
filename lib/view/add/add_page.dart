@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../controller/home_controller.dart';
 import '../../model/to_do_model.dart';
 import '../../repository/home_repository.dart';
-import '../Home/home.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -20,7 +19,7 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('To Do List'),
+          title: const Text('Adicionar'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

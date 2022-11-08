@@ -8,13 +8,14 @@ abstract class HomeRepository {
   Future<bool> createToDo(ToDoModel toDoModel);
   Future<List<ToDoModel>> getToDos();
   Future<bool> deleteToDo(String id);
-  Future<bool> checkToDo(String id, ToDoModel toDo);
+  Future<bool> editToDo(String id, ToDoModel toDo);
 }
 
 class HomeRepositoryHttp implements HomeRepository {
-  final baseUrl = 'https://crudcrud.com/api/a4605c24ac9741f9954e6782d7bbc859';
+  final baseUrl = 'https://crudcrud.com/api/756bf63507e64adaa26c553c693a8dfa';
   @override
   Future<bool> createToDo(ToDoModel toDoModel) async {
+    // ignore: unused_local_variable
     final response = await http.post(Uri.parse('$baseUrl/todos'),
         body: toDoModel.toJson(),
         headers: {
@@ -43,7 +44,7 @@ class HomeRepositoryHttp implements HomeRepository {
   }
 
   @override
-  Future<bool> checkToDo(String id, ToDoModel toDo) async {
+  Future<bool> editToDo(String id, ToDoModel toDo) async {
     final response = await http.put(Uri.parse('$baseUrl/todos/$id'),
         body: toDo.toJson(),
         headers: {
