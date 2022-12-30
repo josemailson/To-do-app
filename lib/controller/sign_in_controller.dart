@@ -15,7 +15,18 @@ class SignInController {
       await Future.delayed(const Duration(seconds: 2));
       await _repository.login(email, password);
       notifier.value = SuccessSignInState();
-    } catch (e, stackTrace) {
+    } catch (e) {
+      notifier.value = ErrorSignInState();
+    }
+  }
+
+  Future<void> register(String email, String password) async {
+    notifier.value = LoadingSignInState();
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      await _repository.register(email, password);
+      notifier.value = SuccessSignInState();
+    } catch (e) {
       notifier.value = ErrorSignInState();
     }
   }
