@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/view/Home/home.dart';
+import 'package:to_do_app/view/home/home.dart';
+import 'package:to_do_app/view/sign_in/sgin_in_page.dart';
+import 'package:to_do_app/view/sign_up/sign_up_page.dart';
+import 'package:to_do_app/view/splash/splash.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -12,7 +15,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Home(),
+      home: const SplashPage(),
+      routes: {
+        '/home': (_) => const Home(),
+        '/signin': (_) => const SignInPage(),
+        '/signup': (_) => const SignUpPage(),
+      },
     );
   }
 }
