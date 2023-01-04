@@ -3,6 +3,7 @@ import 'package:to_do_app/controller/sign_in_controller.dart';
 import 'package:to_do_app/view/sign_in/sign_in_state.dart';
 
 import '../../repository/sign_in_repository.dart';
+import '../../services/injection.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -12,7 +13,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final controller = SignInController(FirebaseRepository());
+  final controller = SignInController(getIt.get<Repository>());
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 

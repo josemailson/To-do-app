@@ -21,8 +21,14 @@ class _SignUpPageState extends State<SignUpPage> {
     super.initState();
     controller.notifier.addListener(() {
       if (controller.state is ErrorSignInState) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('ops, login')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('ops, erro ao criar conta!')));
+      }
+      if (controller.state is SuccessSignInState) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Conta criada com sucesso! Realize Login.')));
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/signin', (route) => false);
       }
     });
   }

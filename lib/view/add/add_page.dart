@@ -39,7 +39,9 @@ class _AddPageState extends State<AddPage> {
                     homeController.createToDo(ToDoModel(
                         title: titleController.text,
                         description: descriptionController.text,
-                        isDone: false));
+                        isDone: false,
+                        date: DateTime.now(),
+                        userId: ''));
                     Navigator.pop(context, true);
                   },
                   child: const Text('Adicionar'))

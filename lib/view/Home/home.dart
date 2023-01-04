@@ -2,8 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/home_controller.dart';
+import 'package:to_do_app/controller/user_controller.dart';
 import 'package:to_do_app/model/to_do_model.dart';
+import 'package:to_do_app/repository/home_firebase_repository.dart';
 import 'package:to_do_app/repository/home_repository.dart';
+import 'package:to_do_app/repository/sign_in_repository.dart';
+import 'package:to_do_app/services/injection.dart';
+import 'package:to_do_app/view/home/home_state.dart';
 
 import '../add/add_page.dart';
 import '../edit/edit_page.dart';
@@ -19,8 +24,22 @@ class _HomeState extends State<Home> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final homeController = HomeController(HomeRepositoryHttp());
+  final controller =
+      UserController(getIt.get<Repository>(), HomeFirebaseRepository());
   int id = 0;
   bool isDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.notifier.addListener(() {
+      if (controller.state is HomeLogoutState) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/signin', (route) => false);
+      }
+    });
+    controller.getToDos();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +83,12 @@ class _HomeState extends State<Home> {
           IconButton(
               // ignore: unnecessary_new
               onPressed: () async => navigateAddPage(),
-              icon: const Icon(Icons.add))
+              icon: const Icon(Icons.add)),
+          IconButton(
+              onPressed: () async {
+                await controller.signOut();
+              },
+              icon: const Icon(Icons.exit_to_app))
         ],
       ),
       body: FutureBuilder<List<ToDoModel>>(
@@ -95,7 +119,9 @@ class _HomeState extends State<Home> {
                             ToDoModel(
                                 title: todo.title,
                                 description: todo.description,
-                                isDone: value!));
+                                isDone: value!,
+                                date: todo.date,
+                                userId: todo.userId));
                         if (result) {
                           setState(() {
                             isDone = value;

@@ -5,10 +5,25 @@ import '../model/user_model.dart';
 abstract class Repository {
   Future<UserModel> login(String email, String password);
   Future<UserModel> register(String email, String password);
+  Future<void> signOut();
+  bool get isLogged;
+  User? get currentUser;
 }
 
 class FirebaseRepository implements Repository {
   FirebaseAuth get _firebase => FirebaseAuth.instance;
+
+  @override
+  bool get isLogged => _firebase.currentUser != null;
+
+  @override
+  User? get currentUser => _firebase.currentUser;
+
+  @override
+  Future<void> signOut() async {
+    await _firebase.signOut();
+  }
+
   @override
   Future<UserModel> login(String email, String password) async {
     try {

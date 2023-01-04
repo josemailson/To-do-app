@@ -54,7 +54,9 @@ class _EditPageState extends State<EditPage> {
                         ToDoModel(
                             title: titleController.text,
                             description: descriptionController.text,
-                            isDone: widget.isDone));
+                            isDone: widget.isDone,
+                            date: DateTime.now(),
+                            userId: ''));
                     Navigator.pop(context, true);
                   },
                   child: const Text('Editar'))
