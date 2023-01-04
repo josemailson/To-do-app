@@ -1,26 +1,29 @@
-import '../model/to_do_model.dart';
+import 'package:flutter/material.dart';
+
 import '../repository/home_repository.dart';
+import '../repository/sign_in_repository.dart';
+import '../view/home/home_state.dart';
 
 class HomeController {
-  final HomeRepository homeRepository;
+  final AuthRepository _repository;
+  final HomeRepository _homeRepository;
+  HomeController(this._repository, this._homeRepository);
+  final notifier = ValueNotifier<HomeState>(HomeInitialState());
+  HomeState get state => notifier.value;
 
-  HomeController(this.homeRepository);
-
-  Future<bool> createToDo(ToDoModel toDoModel) async {
-    final result = await homeRepository.createToDo(toDoModel);
-    return result;
+  Future<void> signOut() async {
+    await _repository.signOut();
+    notifier.value = HomeLogoutState();
   }
 
-  Future<List<ToDoModel>> getToDos() async {
-    final result = await homeRepository.getToDos();
-    return result;
-  }
-
-  Future<bool> deleteToDo(String id) async {
-    return await homeRepository.deleteToDo(id);
-  }
-
-  Future<bool> editToDo(String id, ToDoModel toDo) async {
-    return await homeRepository.editToDo(id, toDo);
+  Future<void> getToDos() async {
+    notifier.value = HomeLoadingState();
+    try {
+      final userId = _repository.currentUser?.uid;
+      final result = await _homeRepository.getToDos(userId ?? '');
+      notifier.value = HomeSuccessState(result);
+    } catch (e) {
+      notifier.value = HomeErrorState();
+    }
   }
 }

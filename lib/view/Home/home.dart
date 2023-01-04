@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/home_controller.dart';
-import 'package:to_do_app/controller/user_controller.dart';
 import 'package:to_do_app/model/to_do_model.dart';
 import 'package:to_do_app/repository/home_firebase_repository.dart';
 import 'package:to_do_app/repository/home_repository.dart';
@@ -23,9 +22,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final homeController = HomeController(HomeRepositoryHttp());
   final controller =
-      UserController(getIt.get<Repository>(), HomeFirebaseRepository());
+      HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
   int id = 0;
   bool isDone = false;
 
@@ -65,15 +63,15 @@ class _HomeState extends State<Home> {
     }
 
     void navigateAddPage() {
-      Route route = MaterialPageRoute(builder: (context) => const AddPage());
-      Navigator.push(context, route).then(onGoBack);
+      // Route route = MaterialPageRoute(builder: (context) => const AddPage());
+      // Navigator.push(context, route).then(onGoBack);
     }
 
     void navigateEditPage(id, isDone, title, description) {
-      Route route = MaterialPageRoute(
-          builder: (context) => EditPage(
-              id: id, isDone: isDone, title: title, description: description));
-      Navigator.push(context, route).then(onGoBack);
+      // Route route = MaterialPageRoute(
+      //     builder: (context) => EditPage(
+      //         id: id, isDone: isDone, title: title, description: description));
+      // Navigator.push(context, route).then(onGoBack);
     }
 
     return Scaffold(
@@ -91,64 +89,73 @@ class _HomeState extends State<Home> {
               icon: const Icon(Icons.exit_to_app))
         ],
       ),
-      body: FutureBuilder<List<ToDoModel>>(
-        future: homeController.getToDos(),
-        builder: ((context, snapshot) {
-          if (snapshot.data == null && !snapshot.hasError) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError) {
-            const Center(
-              child: Text('Ops, deu ruim!'),
-            );
-          }
-          return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                final todo = snapshot.data?[index];
-                return ListTile(
-                  leading: Checkbox(
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith(getColor),
-                      value: todo?.isDone,
-                      onChanged: (bool? value) async {
-                        final result = await homeController.editToDo(
-                            todo!.id!,
-                            ToDoModel(
-                                title: todo.title,
-                                description: todo.description,
-                                isDone: value!,
-                                date: todo.date,
-                                userId: todo.userId));
-                        if (result) {
-                          setState(() {
-                            isDone = value;
-                          });
-                        }
-                      }),
-                  title: GestureDetector(
-                      child: Text(todo?.title ?? ''),
-                      onTap: () async => navigateEditPage(todo?.id,
-                          todo?.isDone, todo?.title, todo?.description)),
-                  subtitle: GestureDetector(
-                      child: Text(todo?.description ?? ''),
-                      onTap: () async => navigateEditPage(todo?.id,
-                          todo?.isDone, todo?.title, todo?.description)),
-                  trailing: IconButton(
-                      onPressed: () async {
-                        final result =
-                            await homeController.deleteToDo(todo!.id!);
-                        if (result) {
-                          setState(() {});
-                        }
-                      },
-                      icon: const Icon(Icons.delete)),
-                );
-              });
-        }),
-      ),
+      body: ValueListenableBuilder(
+          valueListenable: controller.notifier,
+          builder: (context, state, _) {
+            if (state is HomeLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is HomeErrorState) {
+              return Center(
+                child: TextButton(
+                  child: const Text('Tentar Novamente'),
+                  onPressed: () async {
+                    await controller.getToDos();
+                  },
+                ),
+              );
+            }
+            if (state is HomeSuccessState) {
+              return ListView.builder(
+                  itemCount: state.todoList.length,
+                  itemBuilder: (context, index) {
+                    final todo = state.todoList[index];
+                    return ExpansionTile(
+                      expandedAlignment: Alignment.centerLeft,
+                      leading: Checkbox(
+                          checkColor: Colors.white,
+                          fillColor:
+                              MaterialStateProperty.resolveWith(getColor),
+                          value: todo.isDone,
+                          onChanged: (bool? value) async {
+                            // final result = await homeController.editToDo(
+                            //     todo!.id!,
+                            //     ToDoModel(
+                            //         title: todo.title,
+                            //         description: todo.description,
+                            //         isDone: value!,
+                            //         date: todo.date,
+                            //         userId: todo.userId));
+                            // if (result) {
+                            //   setState(() {
+                            //     isDone = value;
+                            //   });
+                            // }
+                          }),
+                      title: GestureDetector(
+                          child: Text(todo.title),
+                          onTap: () async => navigateEditPage(todo.id,
+                              todo.isDone, todo.title, todo.description)),
+                      subtitle: GestureDetector(
+                          child: Text(todo.description),
+                          onTap: () async => navigateEditPage(todo.id,
+                              todo.isDone, todo.title, todo.description)),
+                      trailing: IconButton(
+                          onPressed: () async {
+                            // final result =
+                            //     await homeController.deleteToDo(todo!.id!);
+                            // if (result) {
+                            //   setState(() {});
+                            // }
+                          },
+                          icon: const Icon(Icons.delete)),
+                    );
+                  });
+            }
+            return const SizedBox.shrink();
+          }),
     );
   }
 }

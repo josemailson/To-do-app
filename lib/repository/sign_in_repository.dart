@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../model/user_model.dart';
 
-abstract class Repository {
+abstract class AuthRepository {
   Future<UserModel> login(String email, String password);
   Future<UserModel> register(String email, String password);
   Future<void> signOut();
@@ -10,7 +10,7 @@ abstract class Repository {
   User? get currentUser;
 }
 
-class FirebaseRepository implements Repository {
+class FirebaseRepository implements AuthRepository {
   FirebaseAuth get _firebase => FirebaseAuth.instance;
 
   @override
@@ -28,7 +28,9 @@ class FirebaseRepository implements Repository {
   Future<UserModel> login(String email, String password) async {
     try {
       final result = await _firebase.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       if (result.user != null) {
         return UserModel(name: '', email: email);
       }
@@ -42,7 +44,11 @@ class FirebaseRepository implements Repository {
   Future<UserModel> register(String email, String password) async {
     try {
       final result = await _firebase.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
+      //Para mandar o name, use o updateDisplayName
+      //_firebase.currentUser.updateDisplayName(displayName)
       if (result.user != null) {
         return UserModel(name: '', email: email);
       }

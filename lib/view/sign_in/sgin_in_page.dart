@@ -13,7 +13,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final controller = SignInController(getIt.get<Repository>());
+  final controller = SignInController(getIt.get<AuthRepository>());
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 

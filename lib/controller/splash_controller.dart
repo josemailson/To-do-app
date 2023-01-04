@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/repository/sign_in_repository.dart';
+
+import '../repository/sign_in_repository.dart';
 
 enum SplashState { loading, authenticated, unauthenticated }
 
 class SplashController {
-  final Repository _repository;
+  final AuthRepository _repository;
   SplashController(this._repository);
   final notifier = ValueNotifier<SplashState>(SplashState.loading);
   SplashState get state => notifier.value;

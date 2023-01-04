@@ -12,7 +12,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final controller = SplashController(getIt.get<Repository>());
+  final controller = SplashController(getIt.get<AuthRepository>());
   @override
   void initState() {
     super.initState();
