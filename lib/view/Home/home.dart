@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:to_do_app/controller/home_controller.dart';
 import 'package:to_do_app/model/to_do_model.dart';
 import 'package:to_do_app/repository/home_firebase_repository.dart';
 import 'package:to_do_app/repository/home_repository.dart';
 import 'package:to_do_app/repository/sign_in_repository.dart';
+import 'package:to_do_app/services/date_extension.dart';
 import 'package:to_do_app/services/injection.dart';
 import 'package:to_do_app/view/home/home_state.dart';
 
@@ -114,6 +116,7 @@ class _HomeState extends State<Home> {
                     final todo = state.todoList[index];
                     return ExpansionTile(
                       expandedAlignment: Alignment.centerLeft,
+                      expandedCrossAxisAlignment: CrossAxisAlignment.start,
                       leading: Checkbox(
                           checkColor: Colors.white,
                           fillColor:
@@ -138,19 +141,50 @@ class _HomeState extends State<Home> {
                           child: Text(todo.title),
                           onTap: () async => navigateEditPage(todo.id,
                               todo.isDone, todo.title, todo.description)),
-                      subtitle: GestureDetector(
-                          child: Text(todo.description),
-                          onTap: () async => navigateEditPage(todo.id,
-                              todo.isDone, todo.title, todo.description)),
-                      trailing: IconButton(
-                          onPressed: () async {
-                            // final result =
-                            //     await homeController.deleteToDo(todo!.id!);
-                            // if (result) {
-                            //   setState(() {});
-                            // }
-                          },
-                          icon: const Icon(Icons.delete)),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                  child: Text(todo.description),
+                                  onTap: () async => navigateEditPage(
+                                      todo.id,
+                                      todo.isDone,
+                                      todo.title,
+                                      todo.description)),
+                              IconButton(
+                                  onPressed: () async {
+                                    // final result =
+                                    //     await homeController.deleteToDo(todo!.id!);
+                                    // if (result) {
+                                    //   setState(() {});
+                                    // }
+                                  },
+                                  icon: const Icon(Icons.edit)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(todo.date.formattedDate),
+                              IconButton(
+                                  onPressed: () async {
+                                    // final result =
+                                    //     await homeController.deleteToDo(todo!.id!);
+                                    // if (result) {
+                                    //   setState(() {});
+                                    // }
+                                  },
+                                  icon: const Icon(Icons.delete)),
+                            ],
+                          ),
+                        ),
+                      ],
                     );
                   });
             }
