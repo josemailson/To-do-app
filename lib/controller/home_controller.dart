@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../repository/home_repository.dart';
@@ -24,6 +26,19 @@ class HomeController {
       notifier.value = HomeSuccessState(result);
     } catch (e) {
       notifier.value = HomeErrorState();
+    }
+  }
+
+  Future<void> deleteToDo(String id) async {
+    try {
+      final result = await _homeRepository.deleteToDo(id);
+      if (result) {
+        final todoList = (state as HomeSuccessState).todoList;
+        todoList.removeWhere((todo) => todo.id == id);
+        notifier.value = HomeSuccessState(todoList);
+      }
+    } catch (e) {
+      log("Nao deu pra deletar");
     }
   }
 }
