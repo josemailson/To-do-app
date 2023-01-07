@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:to_do_app/controller/add_controller.dart';
 import 'package:to_do_app/controller/home_controller.dart';
 import 'package:to_do_app/repository/home_firebase_repository.dart';
 import 'package:to_do_app/repository/sign_in_repository.dart';
@@ -8,6 +9,7 @@ import 'package:to_do_app/services/date_extension.dart';
 import 'package:to_do_app/services/injection.dart';
 import 'package:to_do_app/view/home/home_state.dart';
 
+import '../../repository/add_repository.dart';
 import '../add/add_page.dart';
 
 class Home extends StatefulWidget {
@@ -22,6 +24,8 @@ class _HomeState extends State<Home> {
   final descriptionController = TextEditingController();
   final controller =
       HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
+  final addController =
+      AddToDoController(getIt.get<AuthRepository>(), AddToDoRepository());
   int id = 0;
   bool isDone = false;
 
@@ -141,13 +145,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Text(todo.description),
                               IconButton(
-                                  onPressed: () async {
-                                    // final result =
-                                    //     await homeController.deleteToDo(todo!.id!);
-                                    // if (result) {
-                                    //   setState(() {});
-                                    // }
-                                  },
+                                  onPressed: () {},
                                   icon: const Icon(Icons.edit)),
                             ],
                           ),
@@ -160,9 +158,9 @@ class _HomeState extends State<Home> {
                               Text(todo.date.formattedDate),
                               IconButton(
                                   onPressed: () async {
-                                    final result =
-                                        await controller.deleteToDo(todo.id!);
-                                    setState(() {});
+                                    if (todo.id != null) {
+                                      controller.deleteToDo(todo.id!);
+                                    }
                                   },
                                   icon: const Icon(Icons.delete)),
                             ],

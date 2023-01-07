@@ -7,24 +7,24 @@ import '../view/add/add_state.dart';
 
 class AddToDoController {
   final AuthRepository _authRepository;
-  final AddToDoRepository _addTodoRepository;
+  final AddToDoRepository _addToDoRepository;
   final notifier = ValueNotifier<AddToDoState>(AddToDoInitialState());
 
   AddToDoState get state => notifier.value;
 
-  AddToDoController(this._authRepository, this._addTodoRepository);
+  AddToDoController(this._authRepository, this._addToDoRepository);
 
   Future<void> addToDo(String title, String description) async {
     try {
       final userId = _authRepository.currentUser?.uid ?? '';
-      final todoModel = ToDoModel(
+      final toDoModel = ToDoModel(
         userId: userId,
         date: DateTime.now(),
         title: title,
         description: description,
         isDone: false,
       );
-      if (await _addTodoRepository.addTodo(todoModel)) {
+      if (await _addToDoRepository.addTodo(toDoModel)) {
         notifier.value = AddToDoSuccessState();
       }
       throw Exception();
@@ -44,7 +44,7 @@ class AddToDoController {
         description: description,
         isDone: toDoModel.isDone,
       );
-      await _addTodoRepository.updateTodo(toDoModelRequest);
+      await _addToDoRepository.updateTodo(toDoModelRequest);
       notifier.value = AddToDoSuccessState();
     } catch (e) {
       notifier.value = AddToDoErrorState();

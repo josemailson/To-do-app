@@ -22,7 +22,7 @@ class HomeFirebaseRepository implements HomeRepository {
   @override
   Future<bool> deleteToDo(String toDoId) async {
     try {
-      final todo = _firestore.doc("todoList/$toDoId");
+      final todo = _firestore.doc("ToDoList/$toDoId");
       if (todo.id.isNotEmpty) {
         await todo.delete();
       }

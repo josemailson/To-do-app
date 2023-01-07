@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/add_controller.dart';
 import 'package:to_do_app/repository/add_repository.dart';
+import 'package:to_do_app/view/add/add_state.dart';
+import '../../controller/home_controller.dart';
+import '../../repository/home_firebase_repository.dart';
 import '../../repository/sign_in_repository.dart';
 import '../../services/injection.dart';
 
@@ -16,6 +19,21 @@ class _AddPageState extends State<AddPage> {
   final descriptionController = TextEditingController();
   final controller =
       AddToDoController(getIt.get<AuthRepository>(), AddToDoRepository());
+  final homeController =
+      HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
+
+  @override
+  void initState() {
+    super.initState();
+    controller.notifier.addListener(() {
+      if (controller.state is AddToDoSuccessState) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/home', (route) => false);
+      }
+    });
+    homeController.getToDos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +57,6 @@ class _AddPageState extends State<AddPage> {
                   onPressed: () {
                     controller.addToDo(
                         titleController.text, descriptionController.text);
-                    Navigator.pop(context, true);
                   },
                   child: const Text('Adicionar'))
             ],
