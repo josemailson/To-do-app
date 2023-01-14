@@ -5,7 +5,7 @@ import '../model/to_do_model.dart';
 class AddToDoRepository {
   final _firestore = FirebaseFirestore.instance;
 
-  Future<bool> addTodo(ToDoModel toDoModel) async {
+  Future<bool> addToDo(ToDoModel toDoModel) async {
     try {
       final result =
           await _firestore.collection('ToDoList').add(toDoModel.toMap());
@@ -15,7 +15,7 @@ class AddToDoRepository {
     }
   }
 
-  Future<void> updateTodo(ToDoModel toDoModel) async {
+  Future<void> updateToDo(ToDoModel toDoModel) async {
     try {
       await _firestore
           .collection('ToDoList')

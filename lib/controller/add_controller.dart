@@ -24,7 +24,7 @@ class AddToDoController {
         description: description,
         isDone: false,
       );
-      if (await _addToDoRepository.addTodo(toDoModel)) {
+      if (await _addToDoRepository.addToDo(toDoModel)) {
         notifier.value = AddToDoSuccessState();
       }
       throw Exception();
@@ -33,8 +33,8 @@ class AddToDoController {
     }
   }
 
-  Future<void> updateTodo(
-      ToDoModel toDoModel, String title, String description) async {
+  Future<void> updateToDo(ToDoModel toDoModel, String title, String description,
+      bool isDone) async {
     try {
       final toDoModelRequest = ToDoModel(
         id: toDoModel.id,
@@ -42,9 +42,9 @@ class AddToDoController {
         date: toDoModel.date,
         title: title,
         description: description,
-        isDone: toDoModel.isDone,
+        isDone: isDone,
       );
-      await _addToDoRepository.updateTodo(toDoModelRequest);
+      await _addToDoRepository.updateToDo(toDoModelRequest);
       notifier.value = AddToDoSuccessState();
     } catch (e) {
       notifier.value = AddToDoErrorState();
