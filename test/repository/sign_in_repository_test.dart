@@ -84,5 +84,15 @@ void main() {
       expect(result, isA<UserModel>());
       expect(result.email, 'user@email.com');
     });
+    test('success sign up failure', () async {
+      when(
+        () => firebaseAuth.createUserWithEmailAndPassword(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenThrow(Exception());
+      expect(() => repository.register('user@email.com', 'user@123'),
+          throwsException);
+    });
   });
 }
