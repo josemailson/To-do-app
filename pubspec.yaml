@@ -43,6 +43,7 @@ dependencies:
   cloud_firestore: ^4.3.1
   intl: ^0.17.0
   firebase_crashlytics: ^3.0.10
+  mocktail: ^0.3.0
 
 dev_dependencies:
   flutter_test:

@@ -119,14 +119,14 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       child: ListTile(
-                        title: Row(
+                        title: Text(todo.title),
+                        subtitle: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(todo.title),
+                            Text(todo.description),
                             Text(todo.date.formattedDate),
                           ],
                         ),
-                        subtitle: Text(todo.description),
                       ),
                     );
                   });

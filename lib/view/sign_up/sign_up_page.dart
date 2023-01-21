@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../controller/sign_in_controller.dart';
@@ -12,7 +13,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final controller = SignInController(FirebaseRepository());
+  final controller =
+      SignInController(FirebaseRepository(FirebaseAuth.instance));
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 

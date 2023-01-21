@@ -11,7 +11,11 @@ abstract class AuthRepository {
 }
 
 class FirebaseRepository implements AuthRepository {
-  FirebaseAuth get _firebase => FirebaseAuth.instance;
+  final FirebaseAuth _firebase;
+
+  FirebaseRepository(this._firebase);
+
+  //FirebaseAuth get _firebase => FirebaseAuth.instance;
 
   @override
   bool get isLogged => _firebase.currentUser != null;
