@@ -26,7 +26,7 @@ void main() {
 
   //sucesso, se logou e devolveu um UserModel
   group('method login', () {
-    test('caso de sucesso', () async {
+    test('success case for login', () async {
       when(
         () => firebaseAuth.signInWithEmailAndPassword(
           email: any(named: 'email'),
@@ -35,16 +35,16 @@ void main() {
       ).thenAnswer((invocation) async => userCredential);
       when((() => userCredential.user)).thenReturn(user);
       //act
-      final result = await repository.login('jmailsons@gmail.com', '99221902');
+      final result = await repository.login('user@email.com', 'user@123');
       //assert
       // result.runtimeType == UserModel
       expect(result, isA<UserModel>());
       //result.email == 'jmailsons@gmail.com'
-      expect(result.email, 'jmailsons@gmail.com');
+      expect(result.email, 'user@email.com');
     });
 
     //erro não existe usuário
-    test('se nao vier user, throw exception', () async {
+    test('no user returned, throw exception', () async {
       when(
         () => firebaseAuth.signInWithEmailAndPassword(
           email: any(named: 'email'),
@@ -53,11 +53,11 @@ void main() {
       ).thenAnswer((invocation) async => userCredential);
       //act
       //assert
-      expect(() => repository.login('jmailsons@gmail.com', '99221902'),
+      expect(() => repository.login('user@email.com', 'user@123'),
           throwsA(isA<Exception>()));
     });
     //erro conexão com o firebase
-    test('se não houver conexão, throw exception', () async {
+    test('no connection, throw exception', () async {
       when(
         () => firebaseAuth.signInWithEmailAndPassword(
           email: any(named: 'email'),
@@ -66,8 +66,23 @@ void main() {
           ),
         ),
       ).thenThrow(Exception());
-      expect(() => repository.login('jmailsons@gmail.com', '99221902'),
+      expect(() => repository.login('user@email.com', 'user@123'),
           throwsException);
+    });
+  });
+
+  group('method register', () {
+    test('success case for sign up', () async {
+      when(
+        () => firebaseAuth.createUserWithEmailAndPassword(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((invocation) async => userCredential);
+      when((() => userCredential.user)).thenReturn(user);
+      final result = await repository.register('user@email.com', 'user@123');
+      expect(result, isA<UserModel>());
+      expect(result.email, 'user@email.com');
     });
   });
 }
