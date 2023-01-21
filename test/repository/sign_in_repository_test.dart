@@ -1,14 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:to_do_app/model/user_model.dart';
 import 'package:to_do_app/repository/sign_in_repository.dart';
-import 'package:mocktail/mocktail.dart';
 
-class FirebaseMock extends Mock implements FirebaseAuth {}
-
-class UserCredentialMock extends Mock implements UserCredential {}
-
-class UserMock extends Mock implements User {}
+import '../mock/mock_classes.dart';
 
 void main() {
   //arrange
@@ -84,7 +79,7 @@ void main() {
       expect(result, isA<UserModel>());
       expect(result.email, 'user@email.com');
     });
-    test('success sign up failure', () async {
+    test('sign up failure', () async {
       when(
         () => firebaseAuth.createUserWithEmailAndPassword(
           email: any(named: 'email'),
