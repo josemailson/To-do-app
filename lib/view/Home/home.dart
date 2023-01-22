@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/add_controller.dart';
 import 'package:to_do_app/controller/home_controller.dart';
@@ -20,8 +21,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final controller =
-      HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
+  final controller = HomeController(getIt.get<AuthRepository>(),
+      HomeFirebaseRepository(FirebaseFirestore.instance));
   final addController =
       AddToDoController(getIt.get<AuthRepository>(), AddToDoRepository());
 
@@ -75,6 +76,17 @@ class _HomeState extends State<Home> {
               return Center(
                 child: TextButton(
                   child: const Text('Tentar Novamente'),
+                  onPressed: () async {
+                    await controller.getToDos();
+                  },
+                ),
+              );
+            }
+            if (state is HomeEmptyState) {
+              return Center(
+                child: TextButton(
+                  child:
+                      const Text('Lista Vazia! Cadastre nova atividade no +'),
                   onPressed: () async {
                     await controller.getToDos();
                   },

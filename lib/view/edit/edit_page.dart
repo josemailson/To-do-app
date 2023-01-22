@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../controller/add_controller.dart';
@@ -29,8 +30,8 @@ class _EditPageState extends State<EditPage> {
   late TextEditingController descriptionController = TextEditingController();
   final controller =
       AddToDoController(getIt.get<AuthRepository>(), AddToDoRepository());
-  final homeController =
-      HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
+  final homeController = HomeController(getIt.get<AuthRepository>(),
+      HomeFirebaseRepository(FirebaseFirestore.instance));
 
   @override
   Widget build(BuildContext context) {

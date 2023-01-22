@@ -8,6 +8,8 @@ class HomeLogoutState implements HomeState {}
 
 class HomeLoadingState implements HomeState {}
 
+class HomeEmptyState implements HomeState {}
+
 class HomeSuccessState implements HomeState {
   final List<ToDoModel> todoList;
 

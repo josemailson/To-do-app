@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/controller/add_controller.dart';
 import 'package:to_do_app/repository/add_repository.dart';
@@ -19,8 +20,8 @@ class _AddPageState extends State<AddPage> {
   final descriptionController = TextEditingController();
   final controller =
       AddToDoController(getIt.get<AuthRepository>(), AddToDoRepository());
-  final homeController =
-      HomeController(getIt.get<AuthRepository>(), HomeFirebaseRepository());
+  final homeController = HomeController(getIt.get<AuthRepository>(),
+      HomeFirebaseRepository(FirebaseFirestore.instance));
 
   @override
   void initState() {

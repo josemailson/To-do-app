@@ -6,7 +6,9 @@ import '../model/to_do_model.dart';
 import 'home_repository.dart';
 
 class HomeFirebaseRepository implements HomeRepository {
-  final _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  HomeFirebaseRepository(this._firestore);
 
   @override
   Future<List<ToDoModel>> getToDos(String userId) async {

@@ -23,6 +23,10 @@ class HomeController {
     try {
       final userId = _repository.currentUser?.uid;
       final result = await _homeRepository.getToDos(userId ?? '');
+      if (result.isEmpty) {
+        notifier.value = HomeEmptyState();
+        return;
+      }
       notifier.value = HomeSuccessState(result);
     } catch (e) {
       notifier.value = HomeErrorState();
